@@ -1476,7 +1476,7 @@ public class Op02WithProcessedDataAndRefs implements Dumpable, Graph<Op02WithPro
 
     private Expression getLiteralConstantPoolEntry(Method m, ConstantPoolEntry cpe, DecompilerComments comments) {
         if (cpe instanceof ConstantPoolEntryLiteral) {
-            return new Literal(TypedLiteral.getConstantPoolEntry(cp, cpe));
+            return new Literal(TypedLiteral.getConstantPoolEntry(cp, cpe), cpe, cp);
         }
         if (cpe instanceof ConstantPoolEntryDynamicInfo) {
             return getDynamicLiteral(m, (ConstantPoolEntryDynamicInfo) cpe, comments);

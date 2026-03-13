@@ -574,6 +574,9 @@ public class OptionsImpl implements Options {
     public static final PermittedOptionProvider.Argument<Boolean> DUMP_EXCEPTION_STACK_TRACE = register(new PermittedOptionProvider.Argument<Boolean>(
             "dumpexceptionstacktrace", defaultTrueBooleanDecoder,
             "Whether to dump the stack trace of exceptions which occurred during decompilation. Disabling this can be useful to get consistent decompilation output, regardless of how CFR is invoked."));
+    public static final PermittedOptionProvider.Argument<Boolean> OUTPUT_STRING_INDEX = register(new PermittedOptionProvider.Argument<Boolean>(
+            "outputstringindex", defaultFalseBooleanDecoder,
+            "Output a JSON sidecar file (.strings.json) alongside each decompiled .java file, indexing all string literal constant pool entries with their output line numbers."));
 
 
     public OptionsImpl(Map<String, String> opts) {

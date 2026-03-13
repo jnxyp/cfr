@@ -43,6 +43,11 @@ public class ConstantPool {
         this.isLoaded = true;
     }
 
+    public long getIndexByEntry(ConstantPoolEntry entry) {
+        // Constant pool is 1-based; entries list is 0-based internally.
+        return entries.indexOf(entry) + 1;
+    }
+
     public DCCommonState getDCCommonState() {
         return dcCommonState;
     }

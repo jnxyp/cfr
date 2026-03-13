@@ -108,6 +108,8 @@ public interface Dumper extends MethodErrorCollector {
 
     int getCurrentLine();
 
+    void registerStringLiteral(long cpIndex, long utf8Index, String rawValue);
+
     void informBytecodeLoc(HasByteCodeLoc loc);
 
     // TODO : I probably want something more structured here, but this will do for now.

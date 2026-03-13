@@ -81,6 +81,10 @@ abstract class AbstractDumper implements Dumper {
     }
 
     @Override
+    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue) {
+    }
+
+    @Override
     public void informBytecodeLoc(HasByteCodeLoc loc) {
     }
 }

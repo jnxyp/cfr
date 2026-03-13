@@ -21,6 +21,9 @@ import org.benf.cfr.reader.bytecode.analysis.types.JavaTypeInstance;
 import org.benf.cfr.reader.bytecode.analysis.types.RawJavaType;
 import org.benf.cfr.reader.bytecode.analysis.types.StackType;
 import org.benf.cfr.reader.bytecode.analysis.types.discovery.InferredJavaType;
+import org.benf.cfr.reader.entities.constantpool.ConstantPool;
+import org.benf.cfr.reader.entities.constantpool.ConstantPoolEntry;
+import org.benf.cfr.reader.entities.constantpool.ConstantPoolEntryString;
 import org.benf.cfr.reader.entities.exceptions.ExceptionCheck;
 import org.benf.cfr.reader.state.TypeUsageCollector;
 import org.benf.cfr.reader.util.output.Dumper;
@@ -47,10 +50,21 @@ public class Literal extends AbstractExpression {
     public static final Literal FLOAT_MINUS_ONE = new Literal(TypedLiteral.getFloatLocked(-1.0f));
 
     protected final TypedLiteral value;
+    private final ConstantPoolEntry cpe;
+    private final ConstantPool cp;
 
     public Literal(TypedLiteral value) {
         super(BytecodeLoc.NONE, value.getInferredJavaType());
         this.value = value;
+        this.cpe = null;
+        this.cp = null;
+    }
+
+    public Literal(TypedLiteral value, ConstantPoolEntry cpe, ConstantPool cp) {
+        super(BytecodeLoc.NONE, value.getInferredJavaType());
+        this.value = value;
+        this.cpe = cpe;
+        this.cp = cp;
     }
 
     @Override
@@ -89,6 +103,10 @@ public class Literal extends AbstractExpression {
 
     @Override
     public Dumper dumpInner(Dumper d) {
+        if (cpe instanceof ConstantPoolEntryString) {
+            ConstantPoolEntryString cpes = (ConstantPoolEntryString) cpe;
+            d.registerStringLiteral(cp.getIndexByEntry(cpes), cpes.getStringIndex(), cpes.getRawValue());
+        }
         return d.dump(value);
     }
 

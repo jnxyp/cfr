@@ -196,6 +196,11 @@ public abstract class DelegatingDumper implements Dumper {
     }
 
     @Override
+    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue) {
+        delegate.registerStringLiteral(cpIndex, utf8Index, rawValue);
+    }
+
+    @Override
     public void informBytecodeLoc(HasByteCodeLoc loc) {
         delegate.informBytecodeLoc(loc);
     }

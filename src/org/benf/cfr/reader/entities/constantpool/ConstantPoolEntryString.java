@@ -27,6 +27,14 @@ public class ConstantPoolEntryString extends AbstractConstantPoolEntry implement
         d.print("String " + getValue());
     }
 
+    public long getStringIndex() {
+        return stringIndex;
+    }
+
+    public String getRawValue() {
+        return getCp().getUTF8Entry((int) stringIndex).getValue();
+    }
+
     public String getValue() {
         if (string == null) {
             string = QuotingUtils.enquoteString(getCp().getUTF8Entry((int) stringIndex).getValue());
