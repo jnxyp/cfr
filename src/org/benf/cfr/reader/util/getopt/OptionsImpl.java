@@ -577,6 +577,9 @@ public class OptionsImpl implements Options {
     public static final PermittedOptionProvider.Argument<Boolean> OUTPUT_STRING_INDEX = register(new PermittedOptionProvider.Argument<Boolean>(
             "outputstringindex", defaultFalseBooleanDecoder,
             "Output a JSON sidecar file (.strings.json) alongside each decompiled .java file, indexing all string literal constant pool entries with their output line numbers."));
+    public static final PermittedOptionProvider.Argument<String> OUTPUT_ZIP = register(new PermittedOptionProvider.Argument<String>(
+            "outputzip", defaultNullStringDecoder,
+            "Decompile to a ZIP archive at [path] instead of individual files (avoids illegal filename issues on Windows)"));
 
 
     public OptionsImpl(Map<String, String> opts) {

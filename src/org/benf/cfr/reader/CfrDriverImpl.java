@@ -15,7 +15,9 @@ import org.benf.cfr.reader.util.getopt.OptionsImpl;
 import org.benf.cfr.reader.util.output.DumperFactory;
 import org.benf.cfr.reader.util.output.InternalDumperFactoryImpl;
 import org.benf.cfr.reader.util.output.SinkDumperFactory;
+import org.benf.cfr.reader.util.output.ZipDumperFactory;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,25 +59,46 @@ public class CfrDriverImpl implements CfrDriver {
         // Can't sort a 1.6 singleton list.
         toAnalyse = ListFactory.newList(toAnalyse);
         Collections.sort(toAnalyse);
-        for (String path : toAnalyse) {
-            // TODO : We shouldn't have to discard state here.  But we do, because
-            // it causes test fails.  (used class name table retains useful symbols).
-            classFileSource.informAnalysisRelativePathDetail(null, null);
-            // Note - both of these need to be reset, as they have caches.
-            DCCommonState dcCommonState = new DCCommonState(options, classFileSource);
-            DumperFactory dumperFactory = outputSinkFactory != null ?
-                    new SinkDumperFactory(outputSinkFactory, options) :
-                    new InternalDumperFactoryImpl(options);
+        String zipPath = options.getOption(OptionsImpl.OUTPUT_ZIP);
 
-            AnalysisType type = options.getOption(OptionsImpl.ANALYSE_AS);
-            if (type == null || type == AnalysisType.DETECT) {
-                type = dcCommonState.detectClsJar(path);
+        // When --outputzip is set, create one shared ZIP for all inputs
+        ZipDumperFactory sharedZipFactory = null;
+        if (zipPath != null && outputSinkFactory == null) {
+            try {
+                sharedZipFactory = new ZipDumperFactory(zipPath, options);
+            } catch (IOException e) {
+                throw new IllegalStateException("Cannot create ZIP output file: " + zipPath, e);
             }
+        }
 
-            if (type == AnalysisType.JAR || type == AnalysisType.WAR) {
-                Driver.doJar(dcCommonState, path, type, dumperFactory);
-            } else if (type == AnalysisType.CLASS) {
-                Driver.doClass(dcCommonState, path, skipInnerClass, dumperFactory);
+        try {
+            for (String path : toAnalyse) {
+                // TODO : We shouldn't have to discard state here.  But we do, because
+                // it causes test fails.  (used class name table retains useful symbols).
+                classFileSource.informAnalysisRelativePathDetail(null, null);
+                // Note - both of these need to be reset, as they have caches.
+                DCCommonState dcCommonState = new DCCommonState(options, classFileSource);
+
+                DumperFactory dumperFactory = outputSinkFactory != null
+                        ? new SinkDumperFactory(outputSinkFactory, options)
+                        : sharedZipFactory != null
+                                ? sharedZipFactory
+                                : new InternalDumperFactoryImpl(options);
+
+                AnalysisType type = options.getOption(OptionsImpl.ANALYSE_AS);
+                if (type == null || type == AnalysisType.DETECT) {
+                    type = dcCommonState.detectClsJar(path);
+                }
+
+                if (type == AnalysisType.JAR || type == AnalysisType.WAR) {
+                    Driver.doJar(dcCommonState, path, type, dumperFactory);
+                } else if (type == AnalysisType.CLASS) {
+                    Driver.doClass(dcCommonState, path, skipInnerClass, dumperFactory);
+                }
+            }
+        } finally {
+            if (sharedZipFactory != null) {
+                sharedZipFactory.close();
             }
         }
     }
