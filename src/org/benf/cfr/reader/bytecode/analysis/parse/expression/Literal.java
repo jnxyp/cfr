@@ -105,7 +105,12 @@ public class Literal extends AbstractExpression {
     public Dumper dumpInner(Dumper d) {
         if (cpe instanceof ConstantPoolEntryString) {
             ConstantPoolEntryString cpes = (ConstantPoolEntryString) cpe;
-            d.registerStringLiteral(cp.getIndexByEntry(cpes), cpes.getStringIndex(), cpes.getRawValue());
+            d.registerStringLiteral(
+                    cp.getIndexByEntry(cpes),
+                    cpes.getStringIndex(),
+                    cpes.getRawValue(),
+                    cp.getClassFile().getClassType().getRawName()
+            );
         }
         return d.dump(value);
     }

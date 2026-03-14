@@ -576,7 +576,7 @@ public class OptionsImpl implements Options {
             "Whether to dump the stack trace of exceptions which occurred during decompilation. Disabling this can be useful to get consistent decompilation output, regardless of how CFR is invoked."));
     public static final PermittedOptionProvider.Argument<Boolean> OUTPUT_STRING_INDEX = register(new PermittedOptionProvider.Argument<Boolean>(
             "outputstringindex", defaultFalseBooleanDecoder,
-            "Output a JSON sidecar file (.strings.json) alongside each decompiled .java file, indexing all string literal constant pool entries with their output line numbers."));
+            "Output a JSON sidecar file (.strings.json) alongside each decompiled .java file, indexing all string literal constant pool entries with their output line numbers and source constant table suffix (for example '', '$1', '$2')."));
     public static final PermittedOptionProvider.Argument<String> OUTPUT_ZIP = register(new PermittedOptionProvider.Argument<String>(
             "outputzip", defaultNullStringDecoder,
             "Decompile to a ZIP archive at [path] instead of individual files (avoids illegal filename issues on Windows)"));

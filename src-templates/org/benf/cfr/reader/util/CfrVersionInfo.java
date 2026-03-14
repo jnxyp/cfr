@@ -12,6 +12,9 @@ public class CfrVersionInfo {
     /** CFR version */
     public static final String VERSION = "${project.version}";
 
+    /** Distribution / edition label */
+    public static final String EDITION = "Starsector Edition";
+
     /** Are we a snapshot? */
     public static final boolean SNAPSHOT = CfrVersionInfo.VERSION.contains("SNAPSHOT");
     /**
@@ -30,7 +33,7 @@ public class CfrVersionInfo {
 
     /** String consisting of CFR version and Git commit hash */
     public static final String VERSION_INFO =
-            VERSION +
+            VERSION + " " + EDITION +
                     (SNAPSHOT ?
                             " (" + GIT_COMMIT_ABBREVIATED + (GIT_IS_DIRTY ? "-dirty" : "") + ")" :
                             "");

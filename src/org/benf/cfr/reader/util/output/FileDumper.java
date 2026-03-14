@@ -33,12 +33,14 @@ public class FileDumper extends StreamDumper {
         final long utf8Index;
         final String rawValue;
         final int line;
+        final String constTable;
 
-        StringEntry(long cpIndex, long utf8Index, String rawValue, int line) {
+        StringEntry(long cpIndex, long utf8Index, String rawValue, int line, String constTable) {
             this.cpIndex = cpIndex;
             this.utf8Index = utf8Index;
             this.rawValue = rawValue;
             this.line = line;
+            this.constTable = constTable;
         }
     }
 
@@ -101,9 +103,15 @@ public class FileDumper extends StreamDumper {
     }
 
     @Override
-    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue) {
+    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName) {
         if (outputStringIndex) {
-            stringEntries.add(new StringEntry(cpIndex, utf8Index, rawValue, getCurrentLine()));
+            stringEntries.add(new StringEntry(
+                    cpIndex,
+                    utf8Index,
+                    rawValue,
+                    getCurrentLine(),
+                    getConstTableSuffix(sourceClassRawName)
+            ));
         }
     }
 
@@ -137,6 +145,7 @@ public class FileDumper extends StreamDumper {
                 StringEntry e = stringEntries.get(i);
                 sw.write("    {\"cp_index\": " + e.cpIndex
                         + ", \"utf8_index\": " + e.utf8Index
+                        + ", \"const_table\": \"" + jsonEscape(e.constTable) + "\""
                         + ", \"value\": \"" + jsonEscape(e.rawValue) + "\""
                         + ", \"line\": " + e.line + "}");
                 if (i < stringEntries.size() - 1) sw.write(",");
@@ -172,6 +181,17 @@ public class FileDumper extends StreamDumper {
             }
         }
         return sb.toString();
+    }
+
+    private String getConstTableSuffix(String sourceClassRawName) {
+        String ownerRawName = type.getRawName();
+        if (sourceClassRawName == null || sourceClassRawName.equals(ownerRawName)) {
+            return "";
+        }
+        if (sourceClassRawName.startsWith(ownerRawName)) {
+            return sourceClassRawName.substring(ownerRawName.length());
+        }
+        return sourceClassRawName;
     }
 
     @Override

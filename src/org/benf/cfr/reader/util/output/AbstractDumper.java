@@ -81,7 +81,7 @@ abstract class AbstractDumper implements Dumper {
     }
 
     @Override
-    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue) {
+    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName) {
     }
 
     @Override

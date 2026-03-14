@@ -9,6 +9,22 @@ To use, simply run the specific version jar, with the class name(s) you want to 
 
 Alternately, to decompile an entire jar, simply provide the jar path, and if you want to emit files (which you probably do!) add `--outputdir /tmp/putithere`.
 
+This fork also adds two output-oriented options:
+
+- `--outputstringindex true`  
+  Writes a `.strings.json` sidecar next to each decompiled `.java` file. Each string entry includes:
+  `cp_index`, `utf8_index`, `const_table`, `value`, and `line`.
+  `const_table` identifies which class file constant table the string came from relative to the current output class, for example `""`, `$1`, or `$2`.
+- `--outputzip out.zip`  
+  Writes decompiled output directly into a ZIP archive instead of individual filesystem files. This is useful on Windows when obfuscated class names would otherwise produce illegal file names.
+
+Examples:
+
+```text
+java -jar cfr.jar --outputdir out --outputstringindex true target.jar
+java -jar cfr.jar --outputzip out.zip --outputstringindex true target.jar
+```
+
 # Getting CFR
 
 The main site for CFR is <a href="https://www.benf.org/other/cfr">benf.org/other/cfr</a>, where releases are available with a bunch of rambling musings from the author.

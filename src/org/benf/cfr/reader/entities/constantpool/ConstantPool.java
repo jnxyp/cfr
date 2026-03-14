@@ -48,6 +48,10 @@ public class ConstantPool {
         return entries.indexOf(entry) + 1;
     }
 
+    public ClassFile getClassFile() {
+        return classFile;
+    }
+
     public DCCommonState getDCCommonState() {
         return dcCommonState;
     }
