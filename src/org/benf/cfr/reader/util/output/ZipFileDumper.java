@@ -27,14 +27,21 @@ public class ZipFileDumper extends StreamDumper {
         final long cpIndex;
         final long utf8Index;
         final String rawValue;
-        final int line;
+        final int startLine;
+        final int startCol;
+        final int endLine;
+        final int endCol;
         final String constTable;
 
-        StringEntry(long cpIndex, long utf8Index, String rawValue, int line, String constTable) {
+        StringEntry(long cpIndex, long utf8Index, String rawValue,
+                    int startLine, int startCol, int endLine, int endCol, String constTable) {
             this.cpIndex = cpIndex;
             this.utf8Index = utf8Index;
             this.rawValue = rawValue;
-            this.line = line;
+            this.startLine = startLine;
+            this.startCol = startCol;
+            this.endLine = endLine;
+            this.endCol = endCol;
             this.constTable = constTable;
         }
     }
@@ -63,13 +70,12 @@ public class ZipFileDumper extends StreamDumper {
     }
 
     @Override
-    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName) {
+    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName,
+                                      int startLine, int startCol, int endLine, int endCol) {
         if (outputStringIndex) {
             stringEntries.add(new StringEntry(
-                    cpIndex,
-                    utf8Index,
-                    rawValue,
-                    getCurrentLine(),
+                    cpIndex, utf8Index, rawValue,
+                    startLine, startCol, endLine, endCol,
                     getConstTableSuffix(sourceClassRawName)
             ));
         }
@@ -115,7 +121,9 @@ public class ZipFileDumper extends StreamDumper {
                         + ", \"utf8_index\": " + e.utf8Index
                         + ", \"const_table\": \"" + jsonEscape(e.constTable) + "\""
                         + ", \"value\": \"" + jsonEscape(e.rawValue) + "\""
-                        + ", \"line\": " + e.line + "}");
+                        + ", \"start\": {\"line\": " + e.startLine + ", \"col\": " + e.startCol + "}"
+                        + ", \"end\": {\"line\": " + e.endLine + ", \"col\": " + e.endCol + "}"
+                        + "}");
                 if (i < stringEntries.size() - 1) sw.write(",");
                 sw.write("\n");
             }

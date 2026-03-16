@@ -196,8 +196,9 @@ public abstract class DelegatingDumper implements Dumper {
     }
 
     @Override
-    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName) {
-        delegate.registerStringLiteral(cpIndex, utf8Index, rawValue, sourceClassRawName);
+    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName,
+                                      int startLine, int startCol, int endLine, int endCol) {
+        delegate.registerStringLiteral(cpIndex, utf8Index, rawValue, sourceClassRawName, startLine, startCol, endLine, endCol);
     }
 
     @Override
@@ -213,5 +214,10 @@ public abstract class DelegatingDumper implements Dumper {
     @Override
     public int getCurrentLine() {
         return delegate.getCurrentLine();
+    }
+
+    @Override
+    public int getCurrentCol() {
+        return delegate.getCurrentCol();
     }
 }

@@ -7,4 +7,5 @@ class MovableDumperContext {
     int indent;
     int outputCount = 0;
     int currentLine = 1; // lines are 1 based.  Sigh.
+    int currentCol = 1;  // columns are 1 based.
 }

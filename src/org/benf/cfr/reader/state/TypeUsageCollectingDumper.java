@@ -201,12 +201,18 @@ public class TypeUsageCollectingDumper implements Dumper {
     }
 
     @Override
+    public int getCurrentCol() {
+        return 0;
+    }
+
+    @Override
     public int getIndentLevel() {
         return 0;
     }
 
     @Override
-    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName) {
+    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName,
+                                      int startLine, int startCol, int endLine, int endCol) {
     }
 
     @Override

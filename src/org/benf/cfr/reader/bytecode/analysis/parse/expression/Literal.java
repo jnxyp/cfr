@@ -105,12 +105,18 @@ public class Literal extends AbstractExpression {
     public Dumper dumpInner(Dumper d) {
         if (cpe instanceof ConstantPoolEntryString) {
             ConstantPoolEntryString cpes = (ConstantPoolEntryString) cpe;
+            int startLine = d.getCurrentLine();
+            int startCol = d.getCurrentCol();
+            d.dump(value);
             d.registerStringLiteral(
                     cp.getIndexByEntry(cpes),
                     cpes.getStringIndex(),
                     cpes.getRawValue(),
-                    cp.getClassFile().getClassType().getRawName()
+                    cp.getClassFile().getClassType().getRawName(),
+                    startLine, startCol,
+                    d.getCurrentLine(), d.getCurrentCol() - 1
             );
+            return d;
         }
         return d.dump(value);
     }

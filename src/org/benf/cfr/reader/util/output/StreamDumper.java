@@ -94,6 +94,7 @@ public abstract class StreamDumper extends AbstractDumper {
         }
         if (convertUTF) s = QuotingUtils.enquoteUTF(s);
         write(s);
+        context.currentCol += s.length();
         context.atStart = false;
         if (doNewLn) {
             newln();
@@ -149,6 +150,7 @@ public abstract class StreamDumper extends AbstractDumper {
     @Override
     public Dumper endCodeln() {
         write(";");
+        context.currentCol += 1;
         context.pendingCR = true;
         context.atStart = true;
         context.outputCount++;
@@ -158,9 +160,11 @@ public abstract class StreamDumper extends AbstractDumper {
     private void doIndent() {
         if (!context.atStart) return;
         for (int x = 0; x < context.indent; ++x) write(STANDARD_INDENT);
+        context.currentCol += context.indent * STANDARD_INDENT.length();
         context.atStart = false;
         if (context.inBlockComment != BlockCommentState.Not) {
             write (" * ");
+            context.currentCol += 3;
         }
     }
 
@@ -170,6 +174,7 @@ public abstract class StreamDumper extends AbstractDumper {
             context.atStart = true;
             context.pendingCR = false;
             context.currentLine++;
+            context.currentCol = 1;
         }
     }
 
@@ -219,5 +224,10 @@ public abstract class StreamDumper extends AbstractDumper {
         int res = context.currentLine;
         if (context.pendingCR) res++;
         return res;
+    }
+
+    @Override
+    public int getCurrentCol() {
+        return context.currentCol;
     }
 }

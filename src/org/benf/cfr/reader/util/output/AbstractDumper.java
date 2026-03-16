@@ -76,12 +76,18 @@ abstract class AbstractDumper implements Dumper {
     }
 
     @Override
+    public int getCurrentCol() {
+        return context.currentCol;
+    }
+
+    @Override
     public int getIndentLevel() {
         return context.indent;
     }
 
     @Override
-    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName) {
+    public void registerStringLiteral(long cpIndex, long utf8Index, String rawValue, String sourceClassRawName,
+                                      int startLine, int startCol, int endLine, int endCol) {
     }
 
     @Override
